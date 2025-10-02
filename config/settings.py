@@ -5,6 +5,7 @@ Production-ready for Railway deployment.
 
 import os
 from pathlib import Path
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -18,6 +19,11 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://withdr-production.up.railway.app",
+    "https://*.railway.app",  # wildcard for Railway domains
+]
+
 # ---------------- INSTALLED APPS ----------------
 INSTALLED_APPS = [
     # Django apps
@@ -29,7 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Whitenoise
-    "whitenoise.runserver_nostatic",  # so static works in dev server
+    "whitenoise.runserver_nostatic",  # static in dev
 
     # allauth
     'allauth',
@@ -100,10 +106,9 @@ TEMPLATES = [
 
 # ---------------- DATABASE ----------------
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+    "default": dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}", conn_max_age=600
+    )
 }
 
 # ---------------- PASSWORD VALIDATORS ----------------
@@ -120,7 +125,7 @@ TIME_ZONE = "Africa/Nairobi"
 USE_I18N = True
 USE_TZ = True
 
-# ---------------- STATIC FILES ----------------
+# ---------------- STATIC & MEDIA ----------------
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
@@ -128,5 +133,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
+# ---------------- DEFAULTS ----------------
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
