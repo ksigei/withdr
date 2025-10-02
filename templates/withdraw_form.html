@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Withdraw{% endblock %}
+
+{% block content %}
+<div class="p-4">
+  <h2 class="text-xl font-semibold mb-4">Withdraw Funds</h2>
+
+  <div class="bg-white p-4 rounded-xl shadow">
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="w-full py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+        Submit Withdrawal
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}

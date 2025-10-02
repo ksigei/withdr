@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="p-4 space-y-6">
+
+  <!-- Welcome Header -->
+  <div class="bg-white p-4 rounded-xl shadow flex items-center justify-between">
+    <h2 class="text-xl font-semibold">Welcome, {{ user.email|default:user.username }}</h2>
+    <a href="{% url 'account_logout' %}" class="text-sm text-red-600 hover:underline">Logout</a>
+  </div>
+
+  <!-- Wallet Balances -->
+  <div class="bg-white p-4 rounded-xl shadow">
+    <h3 class="text-lg font-semibold mb-3">My Wallets</h3>
+    <ul class="divide-y">
+      {% for wallet in wallets %}
+        <li class="py-3 flex justify-between items-center">
+          <div>
+            <p class="font-semibold">{{ wallet.get_currency_display }}</p>
+            <p class="text-gray-500 text-sm">Created: {{ wallet.created_at|date:"M d, Y" }}</p>
+          </div>
+          <span class="font-semibold">{{ wallet.balance }} {{ wallet.currency }}</span>
+        </li>
+      {% empty %}
+        <li class="py-3 text-gray-500">No wallets yet.</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Preferred Bank -->
+  <div class="bg-white p-4 rounded-xl shadow flex justify-between items-center">
+    <div>
+      <p class="text-gray-600">Preferred Bank:</p>
+      {% if preferred_bank %}
+        <p class="font-semibold">
+          {{ preferred_bank.get_bank_name_display }} (****{{ preferred_bank.account_number|slice:"-4:" }})
+        </p>
+      {% else %}
+        <p class="text-red-500">Not set</p>
+      {% endif %}
+    </div>
+    <button onclick="document.getElementById('bankModal').classList.remove('hidden')"
+            class="px-3 py-1 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700">
+      <i class="uil uil-building mr-1"></i> Choose Bank
+    </button>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="grid grid-cols-3 gap-3 text-center">
+    <a href="{% url 'accounts:withdraw' %}" class="bg-indigo-600 text-white p-3 rounded-xl shadow hover:bg-indigo-700">
+      <i class="uil uil-money-withdraw text-2xl mb-1 block"></i>
+      <span class="text-sm">Withdraw</span>
+    </a>
+    <a href="{% url 'accounts:transactions' %}" class="bg-green-600 text-white p-3 rounded-xl shadow hover:bg-green-700">
+      <i class="uil uil-exchange-alt text-2xl mb-1 block"></i>
+      <span class="text-sm">Transactions</span>
+    </a>
+    <a href="{% url 'accounts:banks' %}" class="bg-yellow-500 text-white p-3 rounded-xl shadow hover:bg-yellow-600">
+      <i class="uil uil-building text-2xl mb-1 block"></i>
+      <span class="text-sm">Banks</span>
+    </a>
+  </div>
+</div>
+
+<!-- Modal: Bank Selection -->
+<div id="bankModal" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+  <div class="bg-white w-11/12 md:w-1/3 rounded-xl shadow-lg p-6 relative max-h-[90vh] overflow-y-auto">
+    <button onclick="document.getElementById('bankModal').classList.add('hidden')" 
+            class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
+      <i class="uil uil-times text-xl"></i>
+    </button>
+
+    <h3 class="text-lg font-semibold mb-4">Select Preferred Bank</h3>
+
+    {% if user.bank_accounts.all %}
+      <form method="post" action="{% url 'accounts:set_preferred_bank' %}" class="space-y-3">
+        {% csrf_token %}
+        {% for bank in user.bank_accounts.all %}
+          <label class="flex items-center gap-2 p-2 border rounded cursor-pointer hover:bg-gray-50">
+            <input type="radio" name="bank_id" value="{{ bank.id }}" {% if bank.is_preferred %}checked{% endif %}>
+            <span>{{ bank.get_bank_name_display }} (****{{ bank.account_number|slice:"-4:" }})</span>
+          </label>
+        {% endfor %}
+        <button type="submit" 
+                class="w-full py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 mt-4">
+          Save Preference
+        </button>
+      </form>
+    {% else %}
+      <p class="text-gray-500 mb-4">No bank accounts added yet.</p>
+    {% endif %}
+
+    <!-- Inline Add Bank -->
+    <h4 class="text-md font-semibold mt-6 mb-2">+ Add New Bank</h4>
+    <form method="post" action="{% url 'accounts:set_preferred_bank' %}" class="space-y-3">
+      {% csrf_token %}
+      <input type="hidden" name="new_bank" value="1">
+
+      <div>
+        <label class="block text-sm font-medium">Bank</label>
+        <select name="bank_name" class="w-full p-2 border rounded">
+          {% for key, val in form.bank_name.field.choices %}
+            <option value="{{ key }}">{{ val }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      {% comment %} <div>
+        <label class="block text-sm font-medium">Account Holder</label>
+        <input type="text" name="account_holder_name" class="w-full p-2 border rounded">
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Account Number</label>
+        <input type="text" name="account_number" class="w-full p-2 border rounded">
+      </div> {% endcomment %}
+
+      <button type="submit" 
+              class="w-full py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+        Save Bank
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}

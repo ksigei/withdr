@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>{% block title %}Crypto Wallet{% endblock %}</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Iconscout Unicons -->
+  <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+  <!-- Top Navbar -->
+  <nav class="bg-white shadow fixed w-full top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+      <a href="{% url 'accounts:dashboard' %}" class="flex items-center gap-2">
+        <i class="uil uil-bitcoin-circle text-2xl text-indigo-600"></i>
+        <span class="font-semibold text-lg">CryptoWallet</span>
+      </a>
+      <div class="hidden md:flex items-center gap-6">
+        {% if user.is_authenticated %}
+          <a href="{% url 'accounts:dashboard' %}" class="text-sm text-gray-700 hover:text-indigo-600">Dashboard</a>
+          <a href="{% url 'accounts:transactions' %}" class="text-sm text-gray-700 hover:text-indigo-600">Transactions</a>
+          <a href="{% url 'accounts:withdraw' %}" class="text-sm text-gray-700 hover:text-indigo-600">Withdraw</a>
+          <a href="{% url 'accounts:banks' %}" class="text-sm text-gray-700 hover:text-indigo-600">Banks</a>
+          <a href="{% url 'account_logout' %}" class="text-sm text-red-500">Logout</a>
+        {% else %}
+          <a href="{% url 'account_login' %}" class="text-sm text-indigo-600">Login</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <main class="flex-1 max-w-6xl mx-auto px-4 pt-20 pb-20 md:pb-8">
+    {% for message in messages %}
+      <div class="mb-4 p-3 rounded 
+        {% if message.tags == 'success' %}bg-green-100 text-green-700
+        {% elif message.tags == 'error' %}bg-red-100 text-red-700
+        {% else %}bg-gray-100 text-gray-700{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Bottom Navbar (Mobile Only) -->
+  {% if user.is_authenticated %}
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t shadow-inner z-50">
+    <div class="flex justify-around py-2">
+      <a href="{% url 'accounts:dashboard' %}" class="flex flex-col items-center text-xs text-gray-600">
+        <i class="uil uil-home text-xl"></i>
+        Home
+      </a>
+      <a href="{% url 'accounts:transactions' %}" class="flex flex-col items-center text-xs text-gray-600">
+        <i class="uil uil-receipt text-xl"></i>
+        Txns
+      </a>
+      <a href="{% url 'accounts:withdraw' %}" class="flex flex-col items-center text-xs text-gray-600">
+        <i class="uil uil-arrow-circle-up text-xl"></i>
+        Withdraw
+      </a>
+      <a href="{% url 'accounts:banks' %}" class="flex flex-col items-center text-xs text-gray-600">
+        <i class="uil uil-building text-xl"></i>
+        Banks
+      </a>
+      <a href="{% url 'account_logout' %}" class="flex flex-col items-center text-xs text-red-500">
+        <i class="uil uil-signout text-xl"></i>
+        Logout
+      </a>
+    </div>
+  </nav>
+  {% endif %}
+</body>
+</html>
