@@ -34,22 +34,21 @@ INSTALLED_APPS = [
 ]
 
 
-# ---------------- ALLAUTH CONFIG ----------------
+# ---------------- AUTH / ALLAUTH CONFIG ----------------
 
 AUTH_USER_MODEL = "accounts.CustomUser"
 
-# Allauth new-style config
-ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]  # enforce email + password only
-ACCOUNT_USER_MODEL_USERNAME_FIELD = None  # no username field
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False
+# ✅ New allauth config (post 0.63)
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None  # our CustomUser has no username
+ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]  # required fields
 ACCOUNT_LOGIN_METHODS = {"email"}  # login only with email
-ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_EMAIL_VERIFICATION = "none"  # disable email verification for now
 
 # Socialaccount config
 SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_LOGIN_ON_GET = True
 
+# If you overrode adapter, keep it
 ACCOUNT_ADAPTER = "accounts.adapter.NoUsernameAccountAdapter"
 
 SOCIALACCOUNT_PROVIDERS = {
@@ -87,7 +86,7 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.request',
+                'django.template.context_processors.request',  # required by allauth
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],

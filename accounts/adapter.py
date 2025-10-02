@@ -3,5 +3,8 @@ from allauth.account.adapter import DefaultAccountAdapter
 
 class NoUsernameAccountAdapter(DefaultAccountAdapter):
     def populate_username(self, request, user):
-        # Prevent allauth from trying to set a username
+        """
+        Override allauth's default behavior of requiring a username.
+        Since our CustomUser has no username field, we just skip this.
+        """
         user.username = None
