@@ -2,8 +2,8 @@ from django.conf import settings
 from django.db import models
 from decimal import Decimal
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-
 # ---------------- CUSTOM USER MANAGER ----------------
+
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
