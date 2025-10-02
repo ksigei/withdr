@@ -15,11 +15,13 @@ DEBUG = os.getenv("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = [
     "withdr-production.up.railway.app",
+    "perpetual-growth-production-2b89.up.railway.app",
     "localhost",
     "127.0.0.1",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
+    "https://perpetual-growth-production-2b89.up.railway.app",
     "https://withdr-production.up.railway.app",
     "https://*.railway.app",  # wildcard for Railway domains
 ]
