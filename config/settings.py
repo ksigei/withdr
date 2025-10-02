@@ -66,8 +66,8 @@ SOCIALACCOUNT_PROVIDERS = {
     "google": {
         "SCOPE": ["profile", "email"],
         "APP": {
-            "client_id": os.getenv("GOOGLE_CLIENT_ID", ""),
-            "secret": os.getenv("GOOGLE_CLIENT_SECRET", ""),
+            "client_id": "77283946027-888vrbmfhdcod1ou3nh12otkclkj208q.apps.googleusercontent.com",
+            "secret": "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",
             "key": "",
         },
     }
