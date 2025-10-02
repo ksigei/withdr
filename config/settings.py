@@ -14,12 +14,13 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "changeme-in-prod")
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = [
-    "withdr-production.up.railway.app",
+    "https://graceful-reprieve-production.up.railway.app",
     "localhost",
     "127.0.0.1",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
+    "https://graceful-reprieve-production.up.railway.app",
     "https://withdr-production.up.railway.app",
     "https://*.railway.app",  # wildcard for Railway domains
 ]
