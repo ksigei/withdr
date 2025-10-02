@@ -10,7 +10,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-h=gxoq1tuebix+g$n1t$zz&+1a9e8khiicy8bp)))q-e&mj_&r'
 DEBUG = True
-ALLOWED_HOSTS = ["withdr-production.up.railway.app"]
+
+ALLOWED_HOSTS = ["withdr-production.up.railway.app", "*"]
 
 
 # ---------------- INSTALLED APPS ----------------
